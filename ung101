@@ -1,0 +1,186 @@
+--[[
+    UNIVERSAL NPC SCRIPT (B.A2)
+    UPDATED: MULTI-HIT & CLEAN ESP TOGGLE
+]]--
+
+local _v1 = game:GetService("Players").LocalPlayer
+local _v2 = game:GetService("UserInputService")
+local _v3 = game:GetService("RunService")
+
+local _DATA = {
+    ["_K1"] = false, ["_K2"] = false, ["_K3"] = 20, -- Range
+    ["_K4"] = 4, ["_K5"] = false, ["_K6"] = false, 
+    ["_K7"] = false, ["_K8"] = false, ["_K9"] = false 
+}
+
+local _GUI = Instance.new("ScreenGui")
+_GUI.Name = "UNIV_NPC_B.A2"
+_GUI.ResetOnSpawn = false
+pcall(function() _GUI.Parent = game:GetService("CoreGui") end)
+
+local _M = Instance.new("Frame", _GUI)
+_M.Size = UDim2.new(0, 230, 0, 195)
+_M.Position = UDim2.new(0.5, -115, 0.5, -97)
+_M.BackgroundColor3 = Color3.fromRGB(15, 15, 20); _M.BorderSizePixel = 0; _M.Active = true
+Instance.new("UICorner", _M).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", _M).Color = Color3.fromRGB(0, 255, 255)
+
+local _RES = Instance.new("TextButton", _GUI)
+_RES.Size = UDim2.new(0, 120, 0, 30); _RES.Position = UDim2.new(0.5, -60, 0.05, 0); _RES.Visible = false
+_RES.BackgroundColor3 = Color3.fromRGB(30, 30, 35); _RES.Text = "SHOW MENU"; _RES.TextColor3 = Color3.fromRGB(200, 200, 200); _RES.Font = "SourceSansBold"
+Instance.new("UICorner", _RES)
+
+local function _DRAG(obj)
+    local d, ds, sp, ai
+    obj.InputBegan:Connect(function(i) if not d and (i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch) then d = true; ds = i.Position; sp = obj.Position; ai = i end end)
+    _v2.InputChanged:Connect(function(i) if d and i == ai then local dl = i.Position - ds; obj.Position = UDim2.new(sp.X.Scale, sp.X.Offset + dl.X, sp.Y.Scale, sp.Y.Offset + dl.Y) end end)
+    _v2.InputEnded:Connect(function(i) if i == ai then d = false; ai = nil end end)
+end
+_DRAG(_M); _DRAG(_RES)
+
+local _H = Instance.new("Frame", _M)
+_H.Size = UDim2.new(1, 0, 0, 30); _H.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Instance.new("UICorner", _H)
+
+local _T = Instance.new("TextLabel", _H)
+_T.Size = UDim2.new(1, -60, 1, 0); _T.Position = UDim2.new(0, 10, 0, 0); _T.Text = "B.A2 REM3"; _T.TextColor3 = Color3.fromRGB(0, 255, 255); _T.Font = "SourceSansBold"; _T.BackgroundTransparency = 1; _T.TextXAlignment = "Left"
+
+local _BG = Instance.new("Frame", _H)
+_BG.Size = UDim2.new(0, 50, 1, 0); _BG.Position = UDim2.new(1, -55, 0, 0); _BG.BackgroundTransparency = 1
+Instance.new("UIListLayout", _BG).FillDirection = "Horizontal"
+
+local _MI = Instance.new("TextButton", _BG); _MI.Size = UDim2.new(0, 20, 0, 20); _MI.Text = "-"; _MI.TextColor3 = Color3.new(1,1,1); _MI.BackgroundColor3 = Color3.fromRGB(60, 60, 60); Instance.new("UICorner", _MI)
+local _EX = Instance.new("TextButton", _BG); _EX.Size = UDim2.new(0, 20, 0, 20); _EX.Text = "X"; _EX.TextColor3 = Color3.new(1,1,1); _EX.BackgroundColor3 = Color3.fromRGB(200, 0, 0); Instance.new("UICorner", _EX)
+
+local _ML = Instance.new("Frame", _M); _ML.Position = UDim2.new(0, 10, 0, 35); _ML.Size = UDim2.new(1, -20, 0, 0); _ML.BackgroundTransparency = 1
+Instance.new("UIListLayout", _ML).Padding = UDim.new(0, 5)
+
+local _SF = Instance.new("Frame", _M); _SF.Position = UDim2.new(1, 10, 0, 0); _SF.BackgroundColor3 = Color3.fromRGB(10, 10, 15); _SF.Visible = false
+Instance.new("UICorner", _SF); Instance.new("UIStroke", _SF).Color = Color3.fromRGB(0, 255, 255)
+
+local _SC = Instance.new("Frame", _SF); _SC.Size = UDim2.new(1, -20, 1, -20); _SC.Position = UDim2.new(0, 10, 0, 10); _SC.BackgroundTransparency = 1
+local _SL = Instance.new("UIListLayout", _SC); _SL.Padding = UDim.new(0, 6)
+
+local function _UPD() _SF.Visible = true; _SF.Size = UDim2.new(0, 180, 0, _SL.AbsoluteContentSize.Y + 20) end
+
+local function _TOG(t, k)
+    local b = Instance.new("TextButton", _SC)
+    b.Size = UDim2.new(1, 0, 0, 28); b.Text = t; b.BackgroundColor3 = _DATA[k] and Color3.fromRGB(0, 180, 0) or Color3.fromRGB(40, 40, 45); b.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", b)
+    b.MouseButton1Click:Connect(function() _DATA[k] = not _DATA[k]; b.BackgroundColor3 = _DATA[k] and Color3.fromRGB(0, 180, 0) or Color3.fromRGB(40, 40, 45) end)
+end
+
+local function _TAB(n, c)
+    local b = Instance.new("TextButton", _ML); b.Size = UDim2.new(1, 0, 0, 35); b.Text = n; b.BackgroundColor3 = Color3.fromRGB(30, 30, 35); b.TextColor3 = Color3.new(1,1,1); b.Font = "SourceSansBold"; Instance.new("UICorner", b)
+    b.MouseButton1Click:Connect(function() for _, v in pairs(_SC:GetChildren()) do if not v:IsA("UIListLayout") then v:Destroy() end end c(); _UPD() end)
+end
+
+-- // ENHANCED 3D VISUALIZER
+local _VF = workspace:FindFirstChild("V_BA2") or Instance.new("Folder", workspace); _VF.Name = "V_BA2"
+local function _DRAW_3D(p, r)
+    _VF:ClearAllChildren()
+    local s = 12
+    local function ring(cf)
+        for i = 1, s do
+            local a1, a2 = (i/s)*math.pi*2, ((i+1)/s)*math.pi*2
+            local p1, p2 = (cf*CFrame.Angles(0,a1,0)*CFrame.new(0,0,r)).Position, (cf*CFrame.Angles(0,a2,0)*CFrame.new(0,0,r)).Position
+            local pt = Instance.new("Part", _VF); pt.Anchored, pt.CanCollide, pt.Material, pt.Color, pt.Transparency = true, false, "Neon", Color3.new(0,1,1), 0.6; pt.Size = Vector3.new(0.1, 0.1, (p1-p2).Magnitude + 0.1); pt.CFrame = CFrame.new(p1:Lerp(p2, 0.5), p2)
+        end
+    end
+    ring(CFrame.new(p)) 
+    ring(CFrame.new(p) * CFrame.Angles(math.rad(90), 0, 0)) 
+end
+
+_TAB("AUTO KILL", function()
+    local bx = Instance.new("TextBox", _SC); bx.Size = UDim2.new(1,0,0,28); bx.Text = "Dist: ".._DATA["_K4"]; bx.BackgroundColor3 = Color3.new(0,0,0); bx.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", bx)
+    bx.FocusLost:Connect(function() _DATA["_K4"] = tonumber(bx.Text:match("%d+")) or 4 end)
+    _TOG("Enable Auto Kill", "_K1")
+end)
+
+_TAB("KILL AURA", function()
+    local bx = Instance.new("TextBox", _SC); bx.Size = UDim2.new(1,0,0,28); bx.Text = "Range: ".._DATA["_K3"]; bx.BackgroundColor3 = Color3.new(0,0,0); bx.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", bx)
+    bx.FocusLost:Connect(function() _DATA["_K3"] = tonumber(bx.Text:match("%d+")) or 20 end)
+    _TOG("Enable Aura", "_K2")
+    _TOG("Attack Dead", "_K5")
+    _TOG("Visualizer (3D)", "_K6")
+end)
+
+_TAB("USEFUL", function()
+    local n = Instance.new("TextButton", _SC); n.Size = UDim2.new(1,0,0,28); n.Text = "NPC Controller Script"; n.BackgroundColor3 = Color3.fromRGB(100, 0, 200); n.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", n)
+    n.MouseButton1Click:Connect(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/randomstring0/fe-source/refs/heads/main/NPC/source/main.Luau"))() end)
+    _TOG("NPC ESP", "_K7")
+    _TOG("Show Names", "_K8")
+    _TOG("Del Unanchored", "_K9")
+end)
+
+local _NPC_CACHE = {}
+task.spawn(function()
+    while task.wait(0.5) do
+        local n = {}
+        for _, v in pairs(workspace:GetDescendants()) do if v:IsA("Humanoid") and v.Parent ~= _v1.Character and not game.Players:GetPlayerFromCharacter(v.Parent) then table.insert(n, v.Parent) end end
+        _NPC_CACHE = n
+    end
+end)
+
+_v3.Heartbeat:Connect(function()
+    local c = _v1.Character; local r = c and c:FindFirstChild("HumanoidRootPart")
+    if not r then return end
+    
+    if _DATA["_K6"] then _DRAW_3D(r.Position, _DATA["_K3"]) else _VF:ClearAllChildren() end
+    
+    local targetsInRange = {}
+    local nearestNPC, minDist = nil, math.huge
+
+    for _, np in pairs(_NPC_CACHE) do
+        local h, nrp = np:FindFirstChildOfClass("Humanoid"), np:FindFirstChild("HumanoidRootPart") or np:FindFirstChild("Head")
+        
+        if h and nrp and (h.Health > 0 or _DATA["_K5"]) then
+            local d = (nrp.Position - r.Position).Magnitude
+            
+            -- Collection for Multi-Hit
+            if d <= _DATA["_K3"] then table.insert(targetsInRange, nrp) end
+            
+            -- Collection for Auto-Kill (Nearest only)
+            if d < minDist then minDist = d; nearestNPC = np end
+
+            -- ESP Logic with Cleanup
+            if _DATA["_K7"] then
+                local hl = np:FindFirstChild("ESPH") or Instance.new("Highlight", np); hl.Name = "ESPH"; hl.FillColor = Color3.new(1,0,0)
+                if _DATA["_K8"] then
+                    local t = nrp:FindFirstChild("ETG") or Instance.new("BillboardGui", nrp); t.Name, t.Size, t.AlwaysOnTop, t.ExtentsOffset = "ETG", UDim2.new(0,80,0,20), true, Vector3.new(0,3,0)
+                    local l = t:FindFirstChild("L") or Instance.new("TextLabel", t); l.Name, l.BackgroundTransparency, l.Size, l.TextColor3, l.Text, l.TextSize = "L", 1, UDim2.new(1,0,1,0), Color3.new(1,1,1), np.Name, 10
+                else
+                    if nrp:FindFirstChild("ETG") then nrp.ETG:Destroy() end -- Cleanup Name ESP
+                end
+            else
+                if np:FindFirstChild("ESPH") then np.ESPH:Destroy() end -- Cleanup Highlight
+                if nrp:FindFirstChild("ETG") then nrp.ETG:Destroy() end -- Cleanup Name
+            end
+            
+            if _DATA["_K9"] and not nrp.Anchored and d > 60 then np:Destroy() end
+        end
+    end
+
+    -- MULTI-TARGET KILL AURA EXECUTION
+    if _DATA["_K2"] and #targetsInRange > 0 then
+        local t = c:FindFirstChildOfClass("Tool")
+        if t and t:FindFirstChild("Handle") then
+            t:Activate()
+            for _, targetPart in pairs(targetsInRange) do
+                firetouchinterest(t.Handle, targetPart, 0)
+                firetouchinterest(t.Handle, targetPart, 1)
+            end
+        end
+    end
+
+    -- AUTO KILL (NEAREST ONLY)
+    if _DATA["_K1"] and nearestNPC then
+        local nrp = nearestNPC:FindFirstChild("HumanoidRootPart") or nearestNPC:FindFirstChild("Head")
+        if minDist < 500 then 
+            r.CFrame = nrp.CFrame * CFrame.new(0, _DATA["_K4"], 0) * CFrame.Angles(math.rad(-90), 0, 0) 
+        end
+    end
+end)
+
+_MI.MouseButton1Click:Connect(function() _M.Visible, _SF.Visible, _RES.Visible = false, false, true end)
+_RES.MouseButton1Click:Connect(function() _M.Visible, _RES.Visible = true, false end)
+_EX.MouseButton1Click:Connect(function() _GUI:Destroy() end)
