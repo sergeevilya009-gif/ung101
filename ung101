@@ -180,11 +180,12 @@ local _v3 = game:GetService("RunService")
 local _DATA = {
     ["_K1"] = false, ["_K2"] = false, ["_K3"] = 20, 
     ["_K4"] = 4, ["_K5"] = false, ["_K6"] = false, 
-    ["_K7"] = false, ["_K8"] = false, ["_K9"] = false 
+    ["_K7"] = false, ["_K8"] = false, ["_K9"] = false,
+    ["_SPD"] = 5 -- Default Hit Speed
 }
 
 local _GUI = Instance.new("ScreenGui")
-_GUI.Name = "UNIV_NPC_B.A2"
+_GUI.Name = "Universal npc Hub"
 _GUI.ResetOnSpawn = false
 pcall(function() _GUI.Parent = game:GetService("CoreGui") end)
 
@@ -260,7 +261,7 @@ local function _DRAW_3D(p, r)
 end
 
 _TAB("AUTO KILL", function()
-    local bx = Instance.new("TextBox", _SC); bx.Size = UDim2.new(1,0,0,28); bx.Text = "Dist: ".._DATA["_K4"]; bx.BackgroundColor3 = Color3.new(0,0,0); bx.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", bx)
+    local bx = Instance.new("TextBox", _SC); bx.Size = UDim2.new(1,0,0,28); bx.Text = "Height: ".._DATA["_K4"]; bx.BackgroundColor3 = Color3.new(0,0,0); bx.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", bx)
     bx.FocusLost:Connect(function() _DATA["_K4"] = tonumber(bx.Text:match("%d+")) or 4 end)
     _TOG("Enable Auto Kill", "_K1")
 end)
@@ -268,6 +269,10 @@ end)
 _TAB("KILL AURA", function()
     local bx = Instance.new("TextBox", _SC); bx.Size = UDim2.new(1,0,0,28); bx.Text = "Range: ".._DATA["_K3"]; bx.BackgroundColor3 = Color3.new(0,0,0); bx.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", bx)
     bx.FocusLost:Connect(function() _DATA["_K3"] = tonumber(bx.Text:match("%d+")) or 20 end)
+    
+    local spd = Instance.new("TextBox", _SC); spd.Size = UDim2.new(1,0,0,28); spd.Text = "Hit Speed: ".._DATA["_SPD"]; spd.BackgroundColor3 = Color3.fromRGB(40,0,0); spd.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", spd)
+    spd.FocusLost:Connect(function() _DATA["_SPD"] = math.clamp(tonumber(spd.Text:match("%d+")) or 5, 1, 50) spd.Text = "Hit Speed: ".._DATA["_SPD"] end)
+    
     _TOG("Enable Aura", "_K2")
     _TOG("Attack Dead", "_K5")
     _TOG("Visualizer (3D)", "_K6")
@@ -297,7 +302,6 @@ _v3.Heartbeat:Connect(function()
     
     if _DATA["_K6"] then _DRAW_3D(r.Position, _DATA["_K3"]) else _VF:ClearAllChildren() end
     
-    local targetsInRange = {}
     local nearestNPC, minDist = nil, math.huge
 
     for _, np in pairs(_NPC_CACHE) do
@@ -306,34 +310,24 @@ _v3.Heartbeat:Connect(function()
         if h and nrp and (h.Health > 0 or _DATA["_K5"]) then
             local d = (nrp.Position - r.Position).Magnitude
             
-            if d <= _DATA["_K3"] then table.insert(targetsInRange, nrp) end
+            -- FAST KILL AURA LOGIC
+            if _DATA["_K2"] and d <= _DATA["_K3"] then
+                local tool = c:FindFirstChildOfClass("Tool")
+                if tool and tool:FindFirstChild("Handle") then
+                    tool:Activate()
+                    for i = 1, _DATA["_SPD"] do -- Multi-Hit Loop
+                        firetouchinterest(tool.Handle, nrp, 0)
+                        firetouchinterest(tool.Handle, nrp, 1)
+                    end
+                end
+            end
             
             if d < minDist then minDist = d; nearestNPC = np end
 
             if _DATA["_K7"] then
                 local hl = np:FindFirstChild("ESPH") or Instance.new("Highlight", np); hl.Name = "ESPH"; hl.FillColor = Color3.new(1,0,0)
-                if _DATA["_K8"] then
-                    local t = nrp:FindFirstChild("ETG") or Instance.new("BillboardGui", nrp); t.Name, t.Size, t.AlwaysOnTop, t.ExtentsOffset = "ETG", UDim2.new(0,80,0,20), true, Vector3.new(0,3,0)
-                    local l = t:FindFirstChild("L") or Instance.new("TextLabel", t); l.Name, l.BackgroundTransparency, l.Size, l.TextColor3, l.Text, l.TextSize = "L", 1, UDim2.new(1,0,1,0), Color3.new(1,1,1), np.Name, 10
-                else
-                    if nrp:FindFirstChild("ETG") then nrp.ETG:Destroy() end 
-                end
             else
                 if np:FindFirstChild("ESPH") then np.ESPH:Destroy() end 
-                if nrp:FindFirstChild("ETG") then nrp.ETG:Destroy() end 
-            end
-            
-            if _DATA["_K9"] and not nrp.Anchored and d > 60 then np:Destroy() end
-        end
-    end
-
-    if _DATA["_K2"] and #targetsInRange > 0 then
-        local t = c:FindFirstChildOfClass("Tool")
-        if t and t:FindFirstChild("Handle") then
-            t:Activate()
-            for _, targetPart in pairs(targetsInRange) do
-                firetouchinterest(t.Handle, targetPart, 0)
-                firetouchinterest(t.Handle, targetPart, 1)
             end
         end
     end
