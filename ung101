@@ -12,30 +12,166 @@
 -- if not _G then _G = {} end; _G["\109\111\114\116\097\114"] = true
 -- debug.sethook(); pcall(function() local _c = game.PlaceId end)
 -- local _0x55 = function(_p) return math.sin(_p) * math.cos(_p) end
--- -- [[ MORTAR VIRTUAL MACHINE LOADING ]] --
--- local _L = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
--- function _0xDECODE(_d) return _d end -- Virtualized Decoder Hook
--- -- 0xAF 0xBC 0x22 0x11 0x00 0xFF 0x33 0x77 0x88 0x99 0xAA 0xBB 0xCC 0xDD
--- local _check = os.clock(); if _check == 0 then warn("VM ERROR") end
--- -- Initializing Byte-Buffer [....................] 100%
--- -- Loading Constants table: [772 objects]
--- -- Mapping Upvalues... Done.
--- -- Setting Stack size: 256
--- local _0xDEAD = "BEEF"; local _0xCAFE = "BABE"
--- function _0xRAND() return math.random(1, 100000) end
--- -- 00010101 01110000 01101111 01110111 01100101 01110010
--- -- PROTECT_START: 0x9A22BC
--- local _s1, _s2 = pcall(function() return game.JobId end)
--- -- CHECKPOINT_ALPHA: PASS
--- -- CHECKPOINT_BETA: PASS
--- -- CHECKPOINT_GAMMA: PASS
--- -- [[ BYPASSING ANTIDUMP ]] --
--- local _0x88 = "\108\111\097\100\115\116\114\105\110\103"
--- -- ENV_SPOOF: ENABLED
--- -- REF_0x1: 0x22, 0x33, 0x44
--- -- REF_0x2: 0x55, 0x66, 0x77
--- -- REF_0x3: 0x88, 0x99, 0x00
--- -- [[ SCRIPT START ]] --
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local _v1 = game:GetService("Players").LocalPlayer
 local _v2 = game:GetService("UserInputService")
@@ -77,7 +213,7 @@ _H.Size = UDim2.new(1, 0, 0, 30); _H.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Instance.new("UICorner", _H)
 
 local _T = Instance.new("TextLabel", _H)
-_T.Size = UDim2.new(1, -60, 1, 0); _T.Position = UDim2.new(0, 10, 0, 0); _T.Text = "B.A2 REM3"; _T.TextColor3 = Color3.fromRGB(0, 255, 255); _T.Font = "SourceSansBold"; _T.BackgroundTransparency = 1; _T.TextXAlignment = "Left"
+_T.Size = UDim2.new(1, -60, 1, 0); _T.Position = UDim2.new(0, 10, 0, 0); _T.Text = "Universal npc Hub"; _T.TextColor3 = Color3.fromRGB(0, 255, 255); _T.Font = "SourceSansBold"; _T.BackgroundTransparency = 1; _T.TextXAlignment = "Left"
 
 local _BG = Instance.new("Frame", _H)
 _BG.Size = UDim2.new(0, 50, 1, 0); _BG.Position = UDim2.new(1, -55, 0, 0); _BG.BackgroundTransparency = 1
@@ -138,6 +274,7 @@ _TAB("KILL AURA", function()
 end)
 
 _TAB("USEFUL", function()
+    local cred = Instance.new("TextLabel", _SC); cred.Size = UDim2.new(1, 0, 0, 20); cred.Text = "NPC Controller (NOT MINE)"; cred.TextColor3 = Color3.new(0.8, 0.8, 0.8); cred.Font = "SourceSansItalic"; cred.BackgroundTransparency = 1; cred.TextSize = 12
     local n = Instance.new("TextButton", _SC); n.Size = UDim2.new(1,0,0,28); n.Text = "NPC Controller Script"; n.BackgroundColor3 = Color3.fromRGB(100, 0, 200); n.TextColor3 = Color3.new(1,1,1); Instance.new("UICorner", n)
     n.MouseButton1Click:Connect(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/randomstring0/fe-source/refs/heads/main/NPC/source/main.Luau"))() end)
     _TOG("NPC ESP", "_K7")
@@ -212,4 +349,3 @@ end)
 _MI.MouseButton1Click:Connect(function() _M.Visible, _SF.Visible, _RES.Visible = false, false, true end)
 _RES.MouseButton1Click:Connect(function() _M.Visible, _RES.Visible = true, false end)
 _EX.MouseButton1Click:Connect(function() _GUI:Destroy() end)
-
